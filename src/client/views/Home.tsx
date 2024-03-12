@@ -5,7 +5,9 @@ interface HomeProps {}
 const Home = (props: HomeProps) => {
   return (
     <main className="container mt-5">
-        <section className="row justify-content-center"></section>
+        <section className="row justify-content-center">
+          <h1 className="text-center text-primary">Home</h1>
+        </section>
     </main>
   );
 };
