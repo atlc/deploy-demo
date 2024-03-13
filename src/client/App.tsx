@@ -27,7 +27,7 @@ const App = (props: AppProps) => {
             </Navbar>
 		<Routes>
 			<Route path="/" element={<Home />} />
-            <Route path="/chirp/:id" element={<ChirpDetails />} />
+            <Route path="/chirps/:id" element={<ChirpDetails />} />
             <Route path="/chirp" element={<ChirpIt />} />
             <Route path="/edit" element={<EditChirp />} />
             <Route path="/mentions" element={<UserMentions />} />
