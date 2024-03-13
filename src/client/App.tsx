@@ -14,7 +14,7 @@ const App = (props: AppProps) => {
 	
 	return (
 		<BrowserRouter>
-		<Navbar bg="light" expand="lg">
+		<Navbar bg="info" expand="lg">
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
                     <Navbar.Collapse id="basic-navbar-nav">
                         <Nav className="me-auto">
