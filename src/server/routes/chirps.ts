@@ -63,4 +63,20 @@ router.delete("/:id", async (req, res) => {
     }
 });
 
+router.get('/mentions/:user_id', async (req, res) => {
+    const user_id = parseInt(req.params.user_id, 10);
+
+    if (isNaN(user_id)) {
+        return res.status(400).json({ message: "User ID must be a number" });
+    }
+
+    try {
+        const mentionedChirps = await db.chirps.getMentions(user_id);
+        res.status(200).json(mentionedChirps);
+    } catch (error) {
+        console.error("Error getting mentions:", error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+});
+
 export default router;

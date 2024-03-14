@@ -28,3 +28,7 @@ export function updateChirp(user_id:number, body:string, location:string, id:num
 export function deleteChirp(id:number) {
     return ModifyQuery('DELETE FROM chirps WHERE id = ?;', [id])
 }
+
+export function getMentions(user_id:number) {
+    return SelectQuery<IChirpsRow>('SELECT c.* FROM chirps c JOIN mentions m ON m.chirp_id = c.id WHERE m.user_id = ?', [user_id])
+}
