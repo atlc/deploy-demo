@@ -17,6 +17,6 @@ export function getOneChirp(id:number) {
     return SelectQuery<IChirpsRow>('SELECT * FROM chirps WHERE id = ?;', [id])
 }
 
-export function insertChirp(chirp:string, location:string) {
-    return ModifyQuery('INSERT INTO chirps (body, location) VALUE (?);', [chirp, location])
+export function insertChirp(user_id:number, body:string, location:string) {
+    return ModifyQuery('INSERT INTO chirps (user_id, body, location) VALUE (?, ?, ?);', [user_id, body, location])
 }
