@@ -16,6 +16,4 @@ export function getOneUser(id:number) {
     return SelectQuery<IUsersRow>('SELECT * FROM users WHERE id = ?;', [id])
 }
 
-export function insertUser(handle:string, email:string) {
-    return ModifyQuery('INSERT INTO users (handle) VALUE (?);', [handle, email])
-}
+
