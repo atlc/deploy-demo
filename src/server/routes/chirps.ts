@@ -38,22 +38,29 @@ router.post('/', async (req,res) => {
     }
 });
 
-// router.put('/', async (req,res) => {
-//     try {
-        
-//     } catch (error) {
-//         console.log(error)
-//         res.status(500).json({message: 'Internal Server Error', error})
-//     }
-// });
+// PUT /api/chirps/id
+router.put("/:id", async (req, res) => {
+    try {
+        const { user_id, body, location } = req.body;
+        const id = Number(req.params.id);
+        await db.chirps.updateChirp(user_id, body, location, id);
+        res.status(200).json({ message: "Chirp updated successfully" });
+    } catch (error) {
+        console.error("Error updating chirp:", error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+});
 
-// router.delete('/', async (req,res) => {
-//     try {
-        
-//     } catch (error) {
-//         console.log(error)
-//         res.status(500).json({message: 'Internal Server Error', error})
-//     }
-// });
+// DELETE /api/chirps/id
+router.delete("/:id", async (req, res) => {
+    try {
+        const id = Number(req.params.id);
+        await db.chirps.deleteChirp(id);
+        res.status(200).json({ message: "Chirp deleted successfully" });
+    } catch (error) {
+        console.error("Error deleting chirp:", error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+});
 
 export default router;

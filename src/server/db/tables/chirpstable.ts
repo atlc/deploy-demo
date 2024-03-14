@@ -20,3 +20,11 @@ export function getOneChirp(id:number) {
 export function insertChirp(user_id:number, body:string, location:string) {
     return ModifyQuery('INSERT INTO chirps (user_id, body, location) VALUE (?, ?, ?);', [user_id, body, location])
 }
+
+export function updateChirp(user_id:number, body:string, location:string, id:number) {
+    return ModifyQuery('UPDATE chirps SET user_id = ?, body = ?, location = ? WHERE id = ?;', [user_id, body, location, id])
+}
+
+export function deleteChirp(id:number) {
+    return ModifyQuery('DELETE FROM chirps WHERE id = ?;', [id])
+}
