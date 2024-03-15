@@ -10,11 +10,11 @@ export interface IChirpsRow extends RowDataPacket {
 }
 
 export function getALLChirps() {
-    return SelectQuery<IChirpsRow>('SELECT * FROM chirps;')
+    return SelectQuery<IChirpsRow>('SELECT users.handle, chirps.* FROM chirps JOIN users ON chirps.user_id = users.id;')
 }
 
 export function getOneChirp(id:number) {
-    return SelectQuery<IChirpsRow>('SELECT * FROM chirps WHERE id = ?;', [id])
+    return SelectQuery<IChirpsRow>('SELECT users.handle, chirps.* FROM chirps JOIN users ON chirps.user_id = users.id WHERE chirps.id = ?;', [id])
 }
 
 export function insertChirp(user_id:number, body:string, location:string) {

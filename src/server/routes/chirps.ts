@@ -30,7 +30,7 @@ router.get('/', async (req,res) => {
 router.post('/', async (req,res) => {
     try {
         const { user_id, body, location } = req.body
-        const chirpResult = await db.chirps.insertChirp(user_id, body, location)
+        const chirpResult = await db.chirps.insertChirp(user_id, body, location || '')
         res.json({ message:'chirp created', id:chirpResult.insertId})
     } catch (error) {
         console.log(error)

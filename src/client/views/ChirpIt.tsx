@@ -1,37 +1,44 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Container from 'react-bootstrap/Container';
 import Card from 'react-bootstrap/Card'
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import { useNavigate } from 'react-router-dom';
 import { fetchData } from '../services/fetchData';
-
+import { Chirp } from '../types';
 
 
 interface ChirpItProps { }
 
 const ChirpIt = (props: ChirpItProps) => {
 
-  // const [user, setUser] = useState('')
-  const [content, setContent] = useState<string>('');
+  const [content, setContent] = useState('');
+  const [userID, setUserID] = useState<number | null>(null);
+  const [users, setUsers] = useState<{ id: number; handle: string }[]>([]); 
   const navigate = useNavigate()
 
-  // const handleUserChange = (e: any) => {
-  //   setUser(e.target.value);
-  // }
+    useEffect(() => {
+    fetchData('/api/users')
+      .then(users => setUsers(users))
+  }, [])
 
-  const handleContentChange = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    fetchData('/api/chirps', 'POST', [{ body: content }])
-      .then(data => navigate(`/chirps/${data.id}`));
+  const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    if (!userID) {
+      console.error('Please select a user to mention.');
+      return;
+    }
+
+    const chirpData: Omit<Chirp, 'id' | 'createdAt' | 'location'> = {
+      user_id: userID,
+      body: content
+    };
+
+    fetchData('/api/chirps', 'POST', chirpData)
+      .then(data => navigate(`/chirps/${data.id}`))
   };
-
-  // const handleClick = () => {
-  //   if (user && content !== '') {
-  //     setContent('');
-  //     setUser('');
-  //   }
-  // };
+  
 
 
   return (
@@ -42,18 +49,23 @@ const ChirpIt = (props: ChirpItProps) => {
             <Card.Body>
               <Card.Title className='p-2'>
               </Card.Title>
-              <Form>
+              <Form onSubmit={handleFormSubmit}>
+                <Form.Select size='lg' className='bg-danger' value={userID ?? ''} onChange={(e) => setUserID(Number(e.target.value) || null)}>
+                <option>Select User</option>
+                {users.map(user => (
+                <option key={user.id} value={user.id}>{user.handle}</option>))}
+                </Form.Select>
                 <Form.Group className="mb-3">
                   <Form.Label style={{ fontSize: '1.5em' }}>What's on your mind?</Form.Label>
                   <Form.Control
                     className='bg-light'
                     as="textarea"
                     value={content}
-                    onChange={e => setContent(e.target.value)}
+                    onChange={(e) => setContent(e.target.value)}
                     rows={3} />
                 </Form.Group>
+                <Button type='submit' variant='danger'>Chirp it!</Button>
               </Form>
-              <Button onClick={handleContentChange} variant='danger'>Chirp it!</Button>
             </Card.Body>
           </Card>
         </div>
@@ -63,3 +75,4 @@ const ChirpIt = (props: ChirpItProps) => {
 };
 
 export default ChirpIt;
+

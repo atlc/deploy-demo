@@ -1,19 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { Chirp } from '../types';
+import { ChirpJOIN } from '../types';
 import { Card, Container } from 'react-bootstrap';
 import { fetchData } from '../services/fetchData';
 import { Link } from 'react-router-dom';
+
 
 interface HomeProps { }
 
 const Home = (props: HomeProps) => {
 
-  const [chirps, setChirps] = useState<Chirp[]>([])
+  const [chirps, setChirps] = useState<ChirpJOIN[]>([])
 
   useEffect(() => {
     fetchData('/api/chirps')
       .then(chirps => setChirps(chirps))
-  })
+  },[])
 
   return (
     <Container>
@@ -21,6 +22,9 @@ const Home = (props: HomeProps) => {
         <div className='col-sm-3 col-md-6'>
           {chirps.map(chirp => (
             <Card key={chirp.id} className=" bg-light rounded-3 mb-3 mt-2">
+              <Card.Title className='text-center mt-2'>
+                @{chirp.handle}
+              </Card.Title>
               <Card.Body>
                 <Card.Text >
                   {chirp.body}
