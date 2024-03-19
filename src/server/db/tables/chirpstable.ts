@@ -30,5 +30,5 @@ export function deleteChirp(id:number) {
 }
 
 export function getMentions(user_id:number) {
-    return SelectQuery<IChirpsRow>('SELECT c.* FROM chirps c JOIN mentions m ON m.chirp_id = c.id WHERE m.user_id = ?', [user_id])
+    return SelectQuery<IChirpsRow>('SELECT c.*, u.handle FROM chirps c JOIN users u ON c.user_id = u.id JOIN mentions m ON m.chirp_id = c.id  WHERE m.user_id = ?', [user_id])
 }
