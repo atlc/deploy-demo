@@ -1,40 +1,46 @@
-import { Router } from 'express'
-import db from '../db';
+import { Router } from "express";
+import db from "../db";
+import insertMentions from "../services/insertMentions";
 
 const router = Router();
 
 // GET /api/chirps/id
-router.get('/:id', async (req,res) => {
+router.get("/:id", async (req, res) => {
     try {
-        const id = parseInt(req.params.id, 10)
-        const chirp = await db.chirps.getOneChirp(id)
-        res.json(chirp)
+        const id = parseInt(req.params.id, 10);
+        const chirp = await db.chirps.getOneChirp(id);
+        res.json(chirp);
     } catch (error) {
-        console.log(error)
-        res.status(500).json({message: 'Internal Server Error', error})
+        console.log(error);
+        res.status(500).json({ message: "Internal Server Error", error });
     }
 });
 
 //GET /api/chirps/
-router.get('/', async (req,res) => {
+router.get("/", async (req, res) => {
     try {
-        const chirps = await db.chirps.getALLChirps()
-        res.json(chirps)
+        const chirps = await db.chirps.getALLChirps();
+        res.json(chirps);
     } catch (error) {
-        console.log(error)
-        res.status(500).json({message: 'Internal Server Error', error})
+        console.log(error);
+        res.status(500).json({ message: "Internal Server Error", error });
     }
 });
 
 //POST /api/chirps/
-router.post('/', async (req,res) => {
+router.post("/", async (req, res) => {
     try {
-        const { user_id, body, location } = req.body
-        const chirpResult = await db.chirps.insertChirp(user_id, body, location || '')
-        res.json({ message:'chirp created', id:chirpResult.insertId})
+        const { user_id, body, location } = req.body;
+
+        if (!body || typeof body !== "string" || body.length > 200)
+            return res.status(400).json({ message: "Body must be a string no more than 200 characters" });
+
+        const chirpResult = await db.chirps.insertChirp(user_id, body, location || "");
+        await insertMentions(body, chirpResult.insertId);
+        res.json({ message: "chirp created", id: chirpResult.insertId });
     } catch (error) {
-        console.log(error)
-        res.status(500).json({message: 'Internal Server Error', error})
+        console.log(error);
+        res.status(500).json({ message: "Internal Server Error", error });
     }
 });
 
@@ -44,6 +50,7 @@ router.put("/:id", async (req, res) => {
         const { user_id, body, location } = req.body;
         const id = Number(req.params.id);
         await db.chirps.updateChirp(user_id, body, location, id);
+        await insertMentions(body, id, true);
         res.status(200).json({ message: "Chirp updated successfully" });
     } catch (error) {
         console.error("Error updating chirp:", error);
@@ -55,6 +62,7 @@ router.put("/:id", async (req, res) => {
 router.delete("/:id", async (req, res) => {
     try {
         const id = Number(req.params.id);
+        await db.mentions.deleteForChirp(id);
         await db.chirps.deleteChirp(id);
         res.status(200).json({ message: "Chirp deleted successfully" });
     } catch (error) {
@@ -63,7 +71,7 @@ router.delete("/:id", async (req, res) => {
     }
 });
 
-router.get('/mentions/:user_id', async (req, res) => {
+router.get("/mentions/:user_id", async (req, res) => {
     const user_id = parseInt(req.params.user_id, 10);
 
     if (isNaN(user_id)) {
