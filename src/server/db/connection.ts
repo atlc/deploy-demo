@@ -1,10 +1,6 @@
+import config from "../config";
 import mysql from "mysql2/promise";
 
-const pool = mysql.createPool({
-    host: "localhost",
-    user: "root",
-    password: "root",
-    database: "Chirper",
-});
+const pool = mysql.createPool(config.mysql);
 
 export default pool;

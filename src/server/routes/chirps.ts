@@ -1,6 +1,7 @@
 import { Router } from "express";
 import db from "../db";
 import insertMentions from "../services/insertMentions";
+import config from "../config";
 
 const router = Router();
 
